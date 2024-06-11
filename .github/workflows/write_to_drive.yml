@@ -1,4 +1,4 @@
-name: Dependency Installation Test
+name: Run Simple Python Script Test
 
 on:
   schedule:
@@ -22,5 +22,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
 
-    - name: Print message
-      run: echo "Dependencies installed."
+    - name: Run simple Python script
+      run: |
+        echo "print('Hello, World!')" > simple_script.py
+        python simple_script.py
