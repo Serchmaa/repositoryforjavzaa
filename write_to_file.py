@@ -23,14 +23,14 @@ def write_to_file():
 
     content = f'Text written at {time.ctime()}\n'
     if not items:
-    	print('File not exist, creating the file ...')
+        print('File not exist, creating the file ...')
         # Create a new file if it doesn't exist
         with open(filename, 'w') as f:
             f.write(content)
         media = MediaFileUpload(filename, mimetype='text/plain')
         drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
     else:
-    	print('Updating the file ...')
+        print('Updating the file ...')
         # Append content to the existing file
         file_id = items[0]['id']
         
