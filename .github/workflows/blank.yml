@@ -58,7 +58,10 @@ jobs:
           from googleapiclient.discovery import build
 
           print('Hello there')
+          print('file_id:')
           print(os.getenv('FILE_ID'))
+          print('REFRESH_TOKEN:')
+          print(os.getenv('REFRESH_TOKEN'))
 
           " > write_to_drive.py
           python write_to_drive.py
