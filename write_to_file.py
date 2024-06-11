@@ -12,23 +12,33 @@ def write_to_file():
         client_id=os.getenv('CLIENT_ID'),
         client_secret=os.getenv('CLIENT_SECRET'),
     )
-    filename = 'testfile.txt'
     drive_service = build('drive', 'v3', credentials=creds)
-
+    
+    file_metadata = {'name': 'testfile.txt', 'mimeType': 'text/plain'}
     content = f'Text written at {time.ctime()}\n'
+    
     # Check if the file exists
     results = drive_service.files().list(q='name="testfile.txt" and mimeType="text/plain"', spaces='drive', fields='files(id, name)').execute()
     items = results.get('files', [])
 
     if not items:
         # Create a new file if it doesn't exist
-        file = drive_service.files().create(body=file_metadata, media_body=content, fields='id').execute()
+        file = drive_service.files().create(body=file_metadata, media_body=io.BytesIO(content.encode('utf-8')), fields='id').execute()
     else:
         # Get the file ID
         file_id = items[0]['id']
-        drive_service.files().update(fileId=file_id, media_body=content, fields='id').execute()
+        
+        # Download the existing content
+        request = drive_service.files().get_media(fileId=file_id)
+        existing_content = request.execute()
+        
+        # Append new content to the existing content
+        new_content = existing_content.decode('utf-8') + content
+        
+        # Update the file with the new content
+        drive_service.files().update(fileId=file_id, media_body=io.BytesIO(new_content.encode('utf-8')), fields='id').execute()
 
-    print(f'Text written at {time.ctime()} to {filename}')
+    print(f'Text written at {time.ctime()} to testfile.txt')
 
 if __name__ == "__main__":
     write_to_file()
