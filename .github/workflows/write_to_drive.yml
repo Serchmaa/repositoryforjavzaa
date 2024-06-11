@@ -29,8 +29,7 @@ jobs:
         REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
         FILE_ID: ${{ secrets.FILE_ID }}
       run: |
-        python - <<EOF
-import os
+        echo "import os
 import time
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -49,7 +48,7 @@ def write_to_file():
     file_metadata = {'name': 'your_file.txt'}
     
     # Check if the file exists
-    results = drive_service.files().list(q=f'name="your_file.txt"', spaces='drive', fields='files(id, name)').execute()
+    results = drive_service.files().list(q=f'name=\"your_file.txt\"', spaces='drive', fields='files(id, name)').execute()
     items = results.get('files', [])
 
     if not items:
@@ -62,5 +61,5 @@ def write_to_file():
         file_id = items[0]['id']
         drive_service.files().update(fileId=file_id, media_body=content).execute()
 
-write_to_file()
-EOF
+write_to_file()" > write_to_drive.py
+        python write_to_drive.py
