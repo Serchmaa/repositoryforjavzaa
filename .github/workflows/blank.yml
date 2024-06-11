@@ -53,13 +53,13 @@ jobs:
           FILE_ID: ${{ secrets.FILE_ID }}
         run: |
           echo "import os
-  import time
-  from google.oauth2.credentials import Credentials
-  from googleapiclient.discovery import build
+          import time
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
 
-  print("Hello there")
-  print(os.getenv('FILE_ID'))
+          print("Hello there")
+          print(os.getenv('FILE_ID'))
 
-  " > write_to_drive.py
+          " > write_to_drive.py
           python write_to_drive.py
 
