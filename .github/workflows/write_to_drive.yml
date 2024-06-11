@@ -3,6 +3,7 @@ name: Minimal Workflow Test
 on:
   schedule:
     - cron: '*/1 * * * *'  # Every 30 minutes
+  workflow_dispatch:
 
 jobs:
   test-job:
