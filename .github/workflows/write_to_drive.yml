@@ -1,9 +1,8 @@
-name: Minimal Workflow Test
+name: Python Setup Test
 
 on:
   schedule:
     - cron: '*/1 * * * *'  # Every 30 minutes
-  workflow_dispatch:
 
 jobs:
   test-job:
@@ -13,5 +12,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
     - name: Print message
-      run: echo "Minimal workflow syntax is correct."
+      run: echo "Python setup complete."
