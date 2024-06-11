@@ -2,6 +2,7 @@ import os
 import time
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
 import io
 
 def write_to_file():
@@ -23,7 +24,8 @@ def write_to_file():
 
     if not items:
         # Create a new file if it doesn't exist
-        file = drive_service.files().create(body=file_metadata, media_body=io.BytesIO(content.encode('utf-8')), fields='id').execute()
+        media = MediaIoBaseUpload(io.BytesIO(content.encode('utf-8')), mimetype='text/plain')
+        drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
     else:
         # Get the file ID
         file_id = items[0]['id']
@@ -34,9 +36,10 @@ def write_to_file():
         
         # Append new content to the existing content
         new_content = existing_content.decode('utf-8') + content
+        media = MediaIoBaseUpload(io.BytesIO(new_content.encode('utf-8')), mimetype='text/plain')
         
         # Update the file with the new content
-        drive_service.files().update(fileId=file_id, media_body=io.BytesIO(new_content.encode('utf-8')), fields='id').execute()
+        drive_service.files().update(fileId=file_id, media_body=media, fields='id').execute()
 
     print(f'Text written at {time.ctime()} to testfile.txt')
 
