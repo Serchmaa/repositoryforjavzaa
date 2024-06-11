@@ -57,7 +57,7 @@ jobs:
           from google.oauth2.credentials import Credentials
           from googleapiclient.discovery import build
 
-          print("Hello there")
+          print('Hello there')
           print(os.getenv('FILE_ID'))
 
           " > write_to_drive.py
