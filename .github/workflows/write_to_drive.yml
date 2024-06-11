@@ -20,8 +20,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install google-auth google-auth-oauthlib google-auth-httplib2 
-google-api-python-client
+        pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
 
     - name: Write to Google Drive
       env:
@@ -47,12 +46,21 @@ def write_to_file():
     drive_service = build('drive', 'v3', credentials=creds)
     file_id = os.getenv('FILE_ID')
     content = f'Text written at {time.ctime()}\n'
-    drive_service.files().update(
-        fileId=file_id,
-        media_body=content,
-        fields='id'
-    ).execute()
+    file_metadata = {'name': 'your_file.txt'}
+    
+    # Check if the file exists
+    results = drive_service.files().list(q=f'name="your_file.txt"', spaces='drive', fields='files(id, name)').execute()
+    items = results.get('files', [])
+
+    if not items:
+        # Create a new file
+        file = drive_service.files().create(body=file_metadata, fields='id').execute()
+        file_id = file.get('id')
+        drive_service.files().update(fileId=file_id, media_body=content).execute()
+    else:
+        # Append content to the existing file
+        file_id = items[0]['id']
+        drive_service.files().update(fileId=file_id, media_body=content).execute()
 
 write_to_file()
 "
-
