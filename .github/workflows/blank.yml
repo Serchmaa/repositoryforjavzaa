@@ -72,6 +72,7 @@ jobs:
             results = drive_service.files().list(q='name=\"testfile.txt\" and mimeType=\"text/plain\"', spaces='drive', fields='files(id, name)').execute()
             items = results.get('files', [])
 
+            content = f'Text written at {time.ctime()}\n'
             if not items:
                 print('not items')
                 # Create a new file if it doesn't exist
