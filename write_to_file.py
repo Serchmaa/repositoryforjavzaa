@@ -14,22 +14,19 @@ def write_to_file():
     )
     filename = 'testfile.txt'
     drive_service = build('drive', 'v3', credentials=creds)
-    file_metadata = {'name': filename, 'mimeType': 'text/plain'}
-    
+
+    content = f'Text written at {time.ctime()}\n'
     # Check if the file exists
     results = drive_service.files().list(q='name="testfile.txt" and mimeType="text/plain"', spaces='drive', fields='files(id, name)').execute()
     items = results.get('files', [])
 
-    content = f'Text written at {time.ctime()}\n'
     if not items:
-        print('File not exist, creating the file ...')
         # Create a new file if it doesn't exist
-        media = drive_service.files().create(body=file_metadata, fields='id').execute()
-        file_id = media.get('id')
-        drive_service.files().update(fileId=file_id, media_body=content).execute()
+        file = drive_service.files().create(body=file_metadata, media_body=content, fields='id').execute()
     else:
+        # Get the file ID
         file_id = items[0]['id']
-        drive_service.files().update(fileId=file_id, media_body=content).execute()
+        drive_service.files().update(fileId=file_id, media_body=content, fields='id').execute()
 
     print(f'Text written at {time.ctime()} to {filename}')
 
