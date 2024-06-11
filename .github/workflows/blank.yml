@@ -66,23 +66,25 @@ jobs:
                 client_secret=os.getenv('CLIENT_SECRET'),
             )
             drive_service = build('drive', 'v3', credentials=creds)
-            file_id = os.getenv('FILE_ID')
-            content = f'Text written at {time.ctime()}\n'
-            file_metadata = {'name': 'your_file.txt'}
+            file_metadata = {'name': 'testfile.txt', 'mimeType': 'text/plain'}
             
             # Check if the file exists
-            results = drive_service.files().list(q=f'name=\"your_file.txt\"', spaces='drive', fields='files(id, name)').execute()
+            results = drive_service.files().list(q='name=\"testfile.txt\" and mimeType=\"text/plain\"', spaces='drive', fields='files(id, name)').execute()
             items = results.get('files', [])
 
             if not items:
-                # Create a new file
-                file = drive_service.files().create(body=file_metadata, fields='id').execute()
-                file_id = file.get('id')
+                print('not items')
+                # Create a new file if it doesn't exist
+                media = drive_service.files().create(body=file_metadata, fields='id').execute()
+                file_id = media.get('id')
                 drive_service.files().update(fileId=file_id, media_body=content).execute()
             else:
                 # Append content to the existing file
+                print('append content')
                 file_id = items[0]['id']
                 drive_service.files().update(fileId=file_id, media_body=content).execute()
+            print(f'Text written at {time.ctime()} to testfile.txt')
+
 
           print('Hello there')
           write_to_file()
